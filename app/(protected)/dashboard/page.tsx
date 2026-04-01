@@ -1,8 +1,8 @@
 "use client";
 
 import { redirect } from "next/navigation";
-import { Button } from "@/components/ui/button";
 import { authClient } from "@/app/lib/auth-client";
+import SignoutBtn from "@/components/auth/signout-btn";
 
 export default function DashboardPage() {
   const { data: session, isPending } = authClient.useSession();
@@ -26,12 +26,7 @@ export default function DashboardPage() {
               Welcome back, {session?.user.name}!
             </p>
           </div>
-          {/* Sign out form */}
-          <form action="/api/auth/sign-out" method="POST">
-            <Button variant="outline" type="submit">
-              Sign Out
-            </Button>
-          </form>
+          <SignoutBtn />
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
