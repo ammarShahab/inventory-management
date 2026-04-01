@@ -1,6 +1,6 @@
 "use client";
 
-import { redirect } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { authClient } from "@/app/lib/auth-client";
 import {
   ShoppingCart,
@@ -10,6 +10,7 @@ import {
   CheckCircle,
   Package,
 } from "lucide-react";
+import { useEffect } from "react";
 
 const STAT_CARDS = [
   {
@@ -58,8 +59,13 @@ const STAT_CARDS = [
 
 export default function DashboardPage() {
   const { data: session, isPending } = authClient.useSession();
-
-  if (!isPending && !session) redirect("/login");
+  const router = useRouter();
+  // if (!isPending && !session) redirect("/login");
+  useEffect(() => {
+    if (!isPending && !session) {
+      router.replace("/login");
+    }
+  }, [isPending, session, router]);
 
   if (isPending) {
     return (

@@ -99,13 +99,15 @@ export function SidebarContent() {
           {/* Avatar circle with initials */}
           <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center shrink-0">
             <span className="text-xs font-semibold text-muted-foreground uppercase">
-              {session?.user.name?.charAt(0) ?? "U"}
+              {session?.user?.name?.charAt(0) ?? "U"}
             </span>
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium truncate">{session?.user.name}</p>
+            <p className="text-sm font-medium truncate">
+              {session?.user?.name ?? "User"}
+            </p>
             <p className="text-xs text-muted-foreground truncate">
-              {session?.user.email}
+              {session?.user?.email}
             </p>
           </div>
         </div>

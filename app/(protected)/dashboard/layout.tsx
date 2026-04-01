@@ -39,6 +39,7 @@ export default function DashboardLayout({
         <Button
           variant="ghost"
           onClick={() => setIsMobileOpen(false)}
+          aria-label="Close menu"
           className="absolute top-4 right-4 p-1 rounded-md text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
         >
           <X className="w-4 h-4" />
@@ -52,6 +53,7 @@ export default function DashboardLayout({
         <header className="md:hidden flex items-center gap-3 px-4 py-3 border-b border-border bg-card shrink-0">
           <Button
             variant="ghost"
+            aria-label="Open menu"
             onClick={() => setIsMobileOpen(true)}
             className="p-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
           >
