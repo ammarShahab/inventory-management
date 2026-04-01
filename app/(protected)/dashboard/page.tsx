@@ -2,48 +2,132 @@
 
 import { redirect } from "next/navigation";
 import { authClient } from "@/app/lib/auth-client";
-import SignoutBtn from "@/components/auth/signout-btn";
+import {
+  ShoppingCart,
+  Clock,
+  AlertTriangle,
+  DollarSign,
+  CheckCircle,
+  Package,
+} from "lucide-react";
+
+const STAT_CARDS = [
+  {
+    label: "Total Orders Today",
+    value: "0",
+    icon: ShoppingCart,
+    color: "text-blue-500",
+    bg: "bg-blue-500/10",
+  },
+  {
+    label: "Pending Orders",
+    value: "0",
+    icon: Clock,
+    color: "text-yellow-500",
+    bg: "bg-yellow-500/10",
+  },
+  {
+    label: "Completed Orders",
+    value: "0",
+    icon: CheckCircle,
+    color: "text-green-500",
+    bg: "bg-green-500/10",
+  },
+  {
+    label: "Revenue Today",
+    value: "$0.00",
+    icon: DollarSign,
+    color: "text-emerald-500",
+    bg: "bg-emerald-500/10",
+  },
+  {
+    label: "Low Stock Items",
+    value: "0",
+    icon: AlertTriangle,
+    color: "text-red-500",
+    bg: "bg-red-500/10",
+  },
+  {
+    label: "Total Products",
+    value: "0",
+    icon: Package,
+    color: "text-purple-500",
+    bg: "bg-purple-500/10",
+  },
+];
 
 export default function DashboardPage() {
   const { data: session, isPending } = authClient.useSession();
 
-  // Optional: Client-side redirect if not authenticated
-  if (!isPending && !session) {
-    redirect("/login");
-  }
+  if (!isPending && !session) redirect("/login");
 
   if (isPending) {
-    return <div className="p-8">Loading...</div>;
+    return (
+      <div className="flex items-center justify-center h-full">
+        <p className="text-muted-foreground text-sm animate-pulse">
+          Loading...
+        </p>
+      </div>
+    );
   }
 
   return (
-    <main className="min-h-screen p-8">
-      <div className="max-w-4xl mx-auto space-y-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold">Dashboard</h1>
-            <p className="text-muted-foreground mt-1">
-              Welcome back, {session?.user.name}!
+    <div className="max-w-6xl mx-auto space-y-8">
+      {/* Header */}
+      <div>
+        <h1 className="text-2xl font-bold tracking-tight">Dashboard</h1>
+        <p className="text-muted-foreground text-sm mt-1">
+          Welcome back, {session?.user.name}! Here&apos;s what&apos;s happening
+          today.
+        </p>
+      </div>
+
+      {/* Stat Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {STAT_CARDS.map(({ label, value, icon: Icon, color, bg }) => (
+          <div
+            key={label}
+            className="border border-border rounded-xl p-5 bg-card flex items-center gap-4 hover:shadow-sm transition-shadow duration-150"
+          >
+            <div className={`${bg} p-2.5 rounded-lg shrink-0`}>
+              <Icon className={`w-5 h-5 ${color}`} />
+            </div>
+            <div>
+              <p className="text-xs text-muted-foreground font-medium">
+                {label}
+              </p>
+              <p className="text-2xl font-bold mt-0.5">{value}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Bottom Row */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Product Summary */}
+        <div className="border border-border rounded-xl bg-card">
+          <div className="px-5 py-4 border-b border-border">
+            <h2 className="font-semibold text-sm">Product Summary</h2>
+          </div>
+          <div className="p-5">
+            <p className="text-sm text-muted-foreground">
+              No products yet. Add products to see summary here.
             </p>
           </div>
-          <SignoutBtn />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="border rounded-lg p-6 bg-card">
-            <h3 className="font-semibold">Total Products</h3>
-            <p className="text-3xl font-bold mt-2">0</p>
+        {/* Activity Log */}
+        <div className="border border-border rounded-xl bg-card">
+          <div className="px-5 py-4 border-b border-border">
+            <h2 className="font-semibold text-sm">Recent Activity</h2>
           </div>
-          <div className="border rounded-lg p-6 bg-card">
-            <h3 className="font-semibold">Pending Orders</h3>
-            <p className="text-3xl font-bold mt-2">0</p>
-          </div>
-          <div className="border rounded-lg p-6 bg-card">
-            <h3 className="font-semibold">Low Stock Alerts</h3>
-            <p className="text-3xl font-bold mt-2">0</p>
+          <div className="p-5">
+            <p className="text-sm text-muted-foreground">
+              No activity yet. Actions will appear here as you use the system.
+            </p>
           </div>
         </div>
       </div>
-    </main>
+    </div>
   );
 }

@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { loginSchema, type LoginFormValues } from "@/lib/validations/auth";
+import { loginSchema, type LoginFormValues } from "@/app/lib/validations/auth";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -35,7 +35,7 @@ const DEMO_CREDENTIALS = {
 export function LoginForm() {
   const router = useRouter();
   const [serverError, setServerError] = useState<string | null>(null);
-  const [isDemoLoading, setIsDemoLoading] = useState(false); // ← separate demo loading state
+  const [isDemoLoading, setIsDemoLoading] = useState(false);
   // Password visibility state
   const [showPassword, setShowPassword] = useState(false);
 
@@ -45,7 +45,7 @@ export function LoginForm() {
   });
 
   const { isSubmitting } = form.formState;
-  const isLoading = isSubmitting || isDemoLoading; // ← disable all buttons when either is loading
+  const isLoading = isSubmitting || isDemoLoading;
 
   async function onSubmit(values: LoginFormValues) {
     setServerError(null);
@@ -68,16 +68,36 @@ export function LoginForm() {
     setServerError(null);
     setIsDemoLoading(true);
 
-    // Pre-fill so the user can see what credentials are being used
     form.setValue("email", DEMO_CREDENTIALS.email);
     form.setValue("password", DEMO_CREDENTIALS.password);
 
-    const { error } = await authClient.signIn.email({
+    // Try sign in first
+    let result = await authClient.signIn.email({
       email: DEMO_CREDENTIALS.email,
       password: DEMO_CREDENTIALS.password,
     });
 
-    if (error) {
+    // If it failed, create the account then sign in again
+    if (result.error) {
+      const signup = await authClient.signUp.email({
+        name: "Demo User",
+        email: DEMO_CREDENTIALS.email,
+        password: DEMO_CREDENTIALS.password,
+      });
+
+      if (signup.error) {
+        setServerError("Demo login failed. Please try again.");
+        setIsDemoLoading(false);
+        return;
+      }
+
+      result = await authClient.signIn.email({
+        email: DEMO_CREDENTIALS.email,
+        password: DEMO_CREDENTIALS.password,
+      });
+    }
+
+    if (result.error) {
       setServerError("Demo login failed. Please try again.");
       setIsDemoLoading(false);
       return;
