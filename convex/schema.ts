@@ -44,4 +44,19 @@ export default defineSchema({
     createdAt: v.optional(v.number()),
     updatedAt: v.optional(v.number()),
   }).index("by_identifier", ["identifier"]),
+
+  categories: defineTable({
+    name: v.string(),
+    createdAt: v.number(),
+  }),
+
+  products: defineTable({
+    name: v.string(),
+    categoryId: v.id("categories"),
+    price: v.number(),
+    stock: v.number(),
+    minStockThreshold: v.number(),
+    status: v.string(), // "active" | "out_of_stock"
+    createdAt: v.number(),
+  }).index("by_category", ["categoryId"]),
 });

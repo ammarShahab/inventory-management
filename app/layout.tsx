@@ -4,6 +4,9 @@ import "./globals.css";
 import { cn } from "@/lib/utils";
 import { Toaster } from "sonner";
 
+import { ConvexClientProvider } from "@/components/web/ConvexClientProvider";
+import { getToken } from "./lib/auth-server";
+
 const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
   variable: "--font-mono",
@@ -24,11 +27,12 @@ export const metadata: Metadata = {
   description: "Manage your inventory and orders efficiently",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const token = await getToken();
   return (
     <html
       lang="en"
@@ -42,8 +46,10 @@ export default function RootLayout({
       )}
     >
       <body suppressHydrationWarning className="min-h-full flex flex-col">
-        {children}
-        <Toaster />
+        <ConvexClientProvider initialToken={token}>
+          {children}
+          <Toaster />
+        </ConvexClientProvider>
       </body>
     </html>
   );
