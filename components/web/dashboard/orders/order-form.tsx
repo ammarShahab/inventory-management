@@ -199,7 +199,6 @@ export function OrderForm() {
                         }
                       </FieldError>
                     </div>
-
                     {/* Quantity Input */}
                     <div className="w-24 space-y-1">
                       <FieldLabel>Qty</FieldLabel>
@@ -216,17 +215,17 @@ export function OrderForm() {
                         }
                       </FieldError>
                     </div>
-
                     {/* Remove Row */}
                     {fields.length > 1 && (
                       <button
                         type="button"
                         onClick={() => remove(index)}
                         className="mt-7 text-muted-foreground hover:text-destructive transition-colors"
+                        aria-label={`Remove item ${index + 1}`}
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
-                    )}
+                    )}{" "}
                   </div>
 
                   {/* Stock Warning */}

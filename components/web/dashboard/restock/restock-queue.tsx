@@ -101,7 +101,7 @@ export function RestockQueue() {
                       min="1"
                       placeholder="Qty"
                       className="w-20 h-8 text-sm"
-                      value={quantities[item.productId] ?? ""}
+                      value={quantities[item.productId] || ""}
                       onChange={(e) =>
                         setQuantities((prev) => ({
                           ...prev,

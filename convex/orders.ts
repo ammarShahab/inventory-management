@@ -136,14 +136,27 @@ export const create = mutation({
 export const updateStatus = mutation({
   args: {
     orderId: v.id("orders"),
-    status: v.string(),
+    status: v.union(
+      v.literal("pending"),
+      v.literal("processing"),
+      v.literal("shipped"),
+      v.literal("delivered"),
+      v.literal("cancelled"),
+    ),
   },
   handler: async (ctx, args) => {
     const order = await ctx.db.get(args.orderId);
     if (!order) throw new Error("Order not found");
 
-    await ctx.db.patch(args.orderId, { status: args.status });
+    // Prevent invalid transitions
+    if (order.status === "delivered" && args.status !== "delivered") {
+      throw new Error("Cannot change status of a delivered order");
+    }
+    if (order.status === "cancelled") {
+      throw new Error("Cannot change status of a cancelled order");
+    }
 
+    await ctx.db.patch(args.orderId, { status: args.status });
     await ctx.db.insert("activityLog", {
       message: `Order #${args.orderId.slice(-6).toUpperCase()} marked as ${args.status}`,
       type: "order",
@@ -181,6 +194,21 @@ export const cancel = mutation({
           .withIndex("by_product", (q) => q.eq("productId", item.productId))
           .first();
         if (queueItem) await ctx.db.delete(queueItem._id);
+      } else {
+        // Update priority if still below threshold
+        const queueItem = await ctx.db
+          .query("restockQueue")
+          .withIndex("by_product", (q) => q.eq("productId", item.productId))
+          .first();
+        if (queueItem) {
+          const ratio = restoredStock / product.minStockThreshold;
+          const priority =
+            ratio <= 0.25 ? "high" : ratio <= 0.6 ? "medium" : "low";
+          await ctx.db.patch(queueItem._id, {
+            currentStock: restoredStock,
+            priority,
+          });
+        }
       }
     }
 

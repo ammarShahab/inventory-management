@@ -2,7 +2,9 @@ import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 
 // Helper: calculate priority based on stock vs threshold
-function getPriority(stock: number, threshold: number): string {
+type Priority = "high" | "medium" | "low";
+function getPriority(stock: number, threshold: number): Priority {
+  if (threshold <= 0) return "high"; // Treat as critical if threshold is invalid
   const ratio = stock / threshold;
   if (ratio <= 0.25) return "high";
   if (ratio <= 0.6) return "medium";
@@ -98,9 +100,12 @@ export const restock = mutation({
         await ctx.db.patch(queueItem._id, { currentStock: newStock, priority });
     }
 
-    // Log the activity
+    // Log the activity (format quantity with explicit sign to avoid "+-N")
+    const sign = args.addQuantity >= 0 ? "+" : "-";
+    const signedLabel = `${sign}${Math.abs(args.addQuantity)}`;
+
     await ctx.db.insert("activityLog", {
-      message: `Stock updated for "${product.name}" (+${args.addQuantity} units, now ${newStock})`,
+      message: `Stock updated for "${product.name}" (${signedLabel} units, now ${newStock})`,
       type: "stock",
       createdAt: Date.now(),
     });

@@ -37,8 +37,9 @@ export function ActivityLog() {
                 <div key={log._id} className="flex items-start gap-3">
                   {/* Color dot by type */}
                   <span
+                    aria-label={`${log.type} activity`}
                     className={`mt-1.5 w-2 h-2 rounded-full shrink-0 ${TYPE_STYLES[log.type] ?? "bg-muted"}`}
-                  />
+                  />{" "}
                   <div>
                     <p className="text-sm">{log.message}</p>
                     <p className="text-xs text-muted-foreground">
