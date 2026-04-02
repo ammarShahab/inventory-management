@@ -59,4 +59,37 @@ export default defineSchema({
     status: v.string(), // "active" | "out_of_stock"
     createdAt: v.number(),
   }).index("by_category", ["categoryId"]),
+
+  orders: defineTable({
+    customerName: v.string(),
+    // Array of { productId, productName, quantity, unitPrice }
+    items: v.array(
+      v.object({
+        productId: v.id("products"),
+        productName: v.string(),
+        quantity: v.number(),
+        unitPrice: v.number(),
+      }),
+    ),
+    totalPrice: v.number(),
+    status: v.string(), // "pending" | "confirmed" | "shipped" | "delivered" | "cancelled"
+    createdAt: v.number(),
+  })
+    .index("by_status", ["status"])
+    .index("by_createdAt", ["createdAt"]),
+
+  restockQueue: defineTable({
+    productId: v.id("products"),
+    productName: v.string(),
+    currentStock: v.number(),
+    minStockThreshold: v.number(),
+    priority: v.string(), // "high" | "medium" | "low"
+    addedAt: v.number(),
+  }).index("by_product", ["productId"]),
+
+  activityLog: defineTable({
+    message: v.string(),
+    type: v.string(), // "order" | "stock" | "restock" | "product"
+    createdAt: v.number(),
+  }).index("by_createdAt", ["createdAt"]),
 });

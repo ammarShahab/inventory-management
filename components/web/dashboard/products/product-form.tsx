@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
@@ -52,12 +52,12 @@ export function ProductForm() {
   });
 
   const {
-    watch,
     setValue,
     formState: { isSubmitting },
   } = form;
 
-  const stockValue = watch("stock");
+  const stockValue = useWatch({ control: form.control, name: "stock" });
+  const statusValue = useWatch({ control: form.control, name: "status" });
 
   useEffect(() => {
     if (Number(stockValue) === 0) {
@@ -175,7 +175,7 @@ export function ProductForm() {
             <Field>
               <FieldLabel>Status</FieldLabel>
               <Select
-                value={form.watch("status")}
+                value={statusValue}
                 onValueChange={(val: "active" | "out_of_stock") =>
                   form.setValue("status", val)
                 }
