@@ -2,17 +2,14 @@
 
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { LogOut, User } from "lucide-react";
+import { User } from "lucide-react";
 import { authClient } from "@/app/lib/auth-client";
-import { toast } from "sonner";
-import { useRouter } from "next/navigation";
 import SignoutBtn from "../auth/signout-btn";
 
 export default function Navbar() {
   // ✅ Use Better Auth hook instead of useConvexAuth
   const { data: session, isPending } = authClient.useSession();
 
-  const router = useRouter();
   const isLoggedIn = !!session;
 
   // Optional: Show loading state while checking auth
@@ -21,7 +18,7 @@ export default function Navbar() {
       <nav className="border-b bg-white/95 backdrop-blur-md sticky top-0 z-50 h-16">
         <div className="max-w-7xl mx-auto px-6 flex items-center justify-between h-16">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 bg-gradient-to-br from-violet-600 to-indigo-600 rounded-2xl" />
+            <div className="w-9 h-9 bg-linear-to-br from-violet-600 to-indigo-600 rounded-2xl" />
             <span className="font-semibold text-2xl tracking-tight">
               Nextify
             </span>
@@ -38,7 +35,7 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-3 group">
-            <div className="w-9 h-9 bg-gradient-to-br from-violet-600 to-indigo-600 rounded-2xl flex items-center justify-center transition-all duration-300 group-hover:scale-110 group-hover:rotate-3">
+            <div className="w-9 h-9 bg-linear-to-br from-violet-600 to-indigo-600 rounded-2xl flex items-center justify-center transition-all duration-300 group-hover:scale-110 group-hover:rotate-3">
               <span className="text-white font-bold text-2xl">N</span>
             </div>
             <span className="font-semibold text-2xl tracking-tight text-gray-900">
@@ -116,7 +113,7 @@ export default function Navbar() {
                 <Link href="/signup">
                   <Button
                     size="sm"
-                    className="bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white font-medium shadow-lg shadow-violet-500/30 transition-all duration-300 hover:shadow-xl hover:shadow-violet-500/40 hover:scale-105 active:scale-95"
+                    className="bg-linear-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white font-medium shadow-lg shadow-violet-500/30 transition-all duration-300 hover:shadow-xl hover:shadow-violet-500/40 hover:scale-105 active:scale-95"
                   >
                     Get Started
                   </Button>
