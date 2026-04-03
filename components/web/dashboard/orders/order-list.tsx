@@ -27,6 +27,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 const STATUS_OPTIONS = [
   "pending",
@@ -85,13 +86,151 @@ export function OrderList() {
   }
 
   return (
-    <Card className="w-full shadow-lg">
+    <Card className="w-full max-w-xl shadow-lg">
       <CardHeader className="flex flex-row items-center justify-between">
         <CardTitle className="text-lg font-semibold">
           Orders ({orders.length})
         </CardTitle>
 
-        {/* Filter by status */}
+        <Select value={filterStatus} onValueChange={setFilterStatus}>
+          <SelectTrigger className="w-40">
+            <SelectValue placeholder="Filter by status" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Orders</SelectItem>
+            {STATUS_OPTIONS.map((s) => (
+              <SelectItem key={s} value={s} className="capitalize">
+                {s}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </CardHeader>
+
+      <CardContent>
+        {orders.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-12 gap-3">
+            <ShoppingCart className="w-8 h-8 text-muted-foreground" />
+            <p className="text-sm text-muted-foreground">No orders found.</p>
+          </div>
+        ) : (
+          // ✅ Only the list is scrollable — header and filter stay fixed
+          <ScrollArea className="h-96 pr-3">
+            <div className="space-y-4">
+              {orders.map((order) => (
+                <div
+                  key={order._id}
+                  className="border border-border rounded-xl p-4 space-y-3 hover:bg-muted/30 transition-colors"
+                >
+                  <div className="flex items-center justify-between flex-wrap gap-2">
+                    <div>
+                      <p className="text-sm font-semibold">
+                        {order.customerName}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        #{order._id.slice(-6).toUpperCase()} ·{" "}
+                        {new Date(order.createdAt).toLocaleString()}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <OrderStatusBadge status={order.status} />
+                      <span className="text-sm font-bold">
+                        ${order.totalPrice.toFixed(2)}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="space-y-1 pl-1">
+                    {order.items.map((item, i) => (
+                      <p key={i} className="text-xs text-muted-foreground">
+                        • {item.productName} × {item.quantity} @ $
+                        {item.unitPrice.toFixed(2)}
+                      </p>
+                    ))}
+                  </div>
+
+                  {order.status !== "cancelled" &&
+                    order.status !== "delivered" && (
+                      <div className="flex items-center gap-2 flex-wrap pt-1">
+                        <Select
+                          value={order.status}
+                          onValueChange={(val) =>
+                            handleStatusChange(order._id, val as OrderStatus)
+                          }
+                        >
+                          <SelectTrigger className="h-8 text-xs w-36">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {STATUS_OPTIONS.filter(
+                              (s) => s !== "cancelled",
+                            ).map((s) => (
+                              <SelectItem
+                                key={s}
+                                value={s}
+                                className="text-xs capitalize"
+                              >
+                                {s}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <Button
+                              variant="destructive"
+                              size="sm"
+                              className="h-8 text-xs"
+                            >
+                              Cancel Order
+                            </Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>
+                                Cancel this order?
+                              </AlertDialogTitle>
+                              <AlertDialogDescription>
+                                This will cancel the order and restore stock for
+                                all items. This action cannot be undone.
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>Go Back</AlertDialogCancel>
+                              <AlertDialogAction
+                                onClick={() => handleCancel(order._id)}
+                              >
+                                Yes, Cancel Order
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
+                      </div>
+                    )}
+
+                  {actionError[order._id] && (
+                    <p className="text-xs text-destructive">
+                      {actionError[order._id]}
+                    </p>
+                  )}
+                </div>
+              ))}
+            </div>
+          </ScrollArea>
+        )}
+      </CardContent>
+    </Card>
+  );
+}
+{
+  /* <Card className="w-full shadow-lg">
+      <CardHeader className="flex flex-row items-center justify-between">
+        <CardTitle className="text-lg font-semibold">
+          Orders ({orders.length})
+        </CardTitle>
+
+       
         <Select value={filterStatus} onValueChange={setFilterStatus}>
           <SelectTrigger className="w-40">
             <SelectValue placeholder="Filter by status" />
@@ -120,7 +259,7 @@ export function OrderList() {
                 key={order._id}
                 className="border border-border rounded-xl p-4 space-y-3 hover:bg-muted/30 transition-colors"
               >
-                {/* Order Header */}
+              
                 <div className="flex items-center justify-between flex-wrap gap-2">
                   <div>
                     <p className="text-sm font-semibold">
@@ -139,7 +278,7 @@ export function OrderList() {
                   </div>
                 </div>
 
-                {/* Order Items */}
+              
                 <div className="space-y-1 pl-1">
                   {order.items.map((item, i) => (
                     <p key={i} className="text-xs text-muted-foreground">
@@ -149,11 +288,11 @@ export function OrderList() {
                   ))}
                 </div>
 
-                {/* Actions */}
+                
                 {order.status !== "cancelled" &&
                   order.status !== "delivered" && (
                     <div className="flex items-center gap-2 flex-wrap pt-1">
-                      {/* Status Update */}
+                     
                       <Select
                         value={order.status}
                         onValueChange={(val) =>
@@ -178,7 +317,7 @@ export function OrderList() {
                         </SelectContent>
                       </Select>
 
-                      {/* Cancel with confirmation */}
+                     
                       <AlertDialog>
                         <AlertDialogTrigger asChild>
                           <Button
@@ -212,7 +351,7 @@ export function OrderList() {
                     </div>
                   )}
 
-                {/* Per-order action error */}
+                
                 {actionError[order._id] && (
                   <p className="text-xs text-destructive">
                     {actionError[order._id]}
@@ -223,6 +362,5 @@ export function OrderList() {
           </div>
         )}
       </CardContent>
-    </Card>
-  );
+    </Card> */
 }

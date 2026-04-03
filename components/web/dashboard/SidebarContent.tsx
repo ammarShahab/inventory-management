@@ -26,15 +26,16 @@ export function SidebarContent() {
       icon: LayoutDashboard,
     },
     {
-      label: "Products",
-      href: "/dashboard/products",
-      icon: Package,
-    },
-    {
       label: "Categories",
       href: "/dashboard/categories",
       icon: Tag,
     },
+    {
+      label: "Products",
+      href: "/dashboard/products",
+      icon: Package,
+    },
+
     {
       label: "Orders",
       href: "/dashboard/orders",

@@ -6,7 +6,7 @@ import { Toaster } from "sonner";
 
 import { ConvexClientProvider } from "@/components/web/ConvexClientProvider";
 import { getToken } from "./lib/auth-server";
-import { TooltipProvider } from "@/components/ui/tooltip";
+// import { TooltipProvider } from "@/components/ui/tooltip";
 
 const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
@@ -47,12 +47,12 @@ export default async function RootLayout({
       )}
     >
       <body suppressHydrationWarning className="min-h-full flex flex-col">
-        <TooltipProvider>
-          <ConvexClientProvider initialToken={token}>
-            {children}
-            <Toaster />
-          </ConvexClientProvider>
-        </TooltipProvider>
+        {/* <TooltipProvider> */}
+        <ConvexClientProvider initialToken={token}>
+          {children}
+          <Toaster />
+        </ConvexClientProvider>
+        {/* </TooltipProvider> */}
       </body>
     </html>
   );
