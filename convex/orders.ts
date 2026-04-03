@@ -138,7 +138,7 @@ export const updateStatus = mutation({
     orderId: v.id("orders"),
     status: v.union(
       v.literal("pending"),
-      v.literal("processing"),
+      v.literal("confirmed"),
       v.literal("shipped"),
       v.literal("delivered"),
       v.literal("cancelled"),

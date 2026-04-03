@@ -35,6 +35,12 @@ const STATUS_OPTIONS = [
   "delivered",
   "cancelled",
 ];
+type OrderStatus =
+  | "pending"
+  | "confirmed"
+  | "shipped"
+  | "delivered"
+  | "cancelled";
 
 export function OrderList() {
   const [filterStatus, setFilterStatus] = useState("all");
@@ -43,9 +49,12 @@ export function OrderList() {
   const cancelOrder = useMutation(api.orders.cancel);
   const [actionError, setActionError] = useState<Record<string, string>>({});
 
-  async function handleStatusChange(orderId: string, status: string) {
+  async function handleStatusChange(orderId: string, status: OrderStatus) {
     try {
-      await updateStatus({ orderId: orderId as Id<"orders">, status });
+      await updateStatus({
+        orderId: orderId as Id<"orders">,
+        status: status as OrderStatus,
+      });
     } catch (err: unknown) {
       setActionError((prev) => ({
         ...prev,
@@ -148,7 +157,7 @@ export function OrderList() {
                       <Select
                         value={order.status}
                         onValueChange={(val) =>
-                          handleStatusChange(order._id, val)
+                          handleStatusChange(order._id, val as OrderStatus)
                         }
                       >
                         <SelectTrigger className="h-8 text-xs w-36">
