@@ -15,6 +15,7 @@ export default function SignoutBtn() {
             onSuccess: () => {
               toast.success("Logged out successfully");
               router.push("/");
+              // window.location.href = "/";
             },
             onError: (error) => {
               toast.error(error.error?.message || "Failed to logout");

@@ -1,7 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { authClient } from "@/app/lib/auth-client";
 import {
   ShoppingCart,
   Clock,
@@ -10,7 +8,8 @@ import {
   CheckCircle,
   Package,
 } from "lucide-react";
-import { useEffect } from "react";
+
+import { useRequireAuth } from "@/app/hooks/useRequireAuth";
 
 const STAT_CARDS = [
   {
@@ -58,14 +57,17 @@ const STAT_CARDS = [
 ];
 
 export default function DashboardPage() {
-  const { data: session, isPending } = authClient.useSession();
-  const router = useRouter();
+  // const { data: session, isPending } = authClient.useSession();
   // if (!isPending && !session) redirect("/login");
-  useEffect(() => {
+  // const router = useRouter();
+  /* useEffect(() => {
     if (!isPending && !session) {
       router.replace("/login");
     }
-  }, [isPending, session, router]);
+  }, [isPending, session, router]); */
+
+  const { session, isPending } = useRequireAuth("/login");
+  // const { isPending } = useRequireAuth("/");
 
   if (isPending) {
     return (
@@ -77,6 +79,13 @@ export default function DashboardPage() {
     );
   }
 
+  if (isPending) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900" />
+      </div>
+    );
+  }
   return (
     <div className="max-w-6xl mx-auto space-y-8">
       {/* Header */}

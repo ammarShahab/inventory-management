@@ -184,6 +184,16 @@ export function LoginForm() {
         >
           {isDemoLoading ? "Logging in as Demo..." : "🚀 Demo Login"}
         </Button>
+        <Link href="/">
+          <Button
+            variant="outline"
+            className="w-full"
+            type="button"
+            disabled={isLoading}
+          >
+            Go to Home
+          </Button>
+        </Link>
       </CardContent>
 
       <CardFooter className="justify-center">

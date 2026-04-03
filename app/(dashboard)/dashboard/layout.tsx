@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { Menu, X, Boxes } from "lucide-react";
 import { SidebarContent } from "@/components/web/dashboard/SidebarContent";
 import { Button } from "@/components/ui/button";
+import { useRequireAuth } from "@/app/hooks/useRequireAuth";
 
 export default function DashboardLayout({
   children,
@@ -12,6 +13,22 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const { session, isPending } = useRequireAuth("/login");
+
+  /* const { session } = useRequireAuth("/login");
+  const { isPending } = useRequireAuth("/"); */
+
+  if (isPending) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900" />
+      </div>
+    );
+  }
+
+  if (!session) {
+    return null; // Will redirect
+  }
 
   return (
     <div className="flex h-screen bg-background overflow-hidden">

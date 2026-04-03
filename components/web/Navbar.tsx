@@ -3,31 +3,30 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { User } from "lucide-react";
-import { authClient } from "@/app/lib/auth-client";
 import SignoutBtn from "../auth/signout-btn";
+import { authClient } from "@/app/lib/auth-client";
 
 export default function Navbar() {
-  // ✅ Use Better Auth hook instead of useConvexAuth
   const { data: session, isPending } = authClient.useSession();
 
   const isLoggedIn = !!session;
 
   // Optional: Show loading state while checking auth
-  if (isPending) {
+  /* if (isPending) {
     return (
       <nav className="border-b bg-white/95 backdrop-blur-md sticky top-0 z-50 h-16">
         <div className="max-w-7xl mx-auto px-6 flex items-center justify-between h-16">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 bg-linear-to-br from-violet-600 to-indigo-600 rounded-2xl" />
             <span className="font-semibold text-2xl tracking-tight">
-              Nextify
+               Nextify
             </span>
           </div>
           <div className="h-8 w-20 bg-gray-200 animate-pulse rounded" />
         </div>
       </nav>
     );
-  }
+  } */
 
   return (
     <nav className="border-b bg-white/95 backdrop-blur-md sticky top-0 z-50">
@@ -35,40 +34,48 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-3 group">
-            <div className="w-9 h-9 bg-linear-to-br from-violet-600 to-indigo-600 rounded-2xl flex items-center justify-center transition-all duration-300 group-hover:scale-110 group-hover:rotate-3">
+            {/* <div className="w-9 h-9 bg-linear-to-br from-violet-600 to-indigo-600 rounded-2xl flex items-center justify-center transition-all duration-300 group-hover:scale-110 group-hover:rotate-3">
               <span className="text-white font-bold text-2xl">N</span>
             </div>
             <span className="font-semibold text-2xl tracking-tight text-gray-900">
               Nextify
-            </span>
+            </span> */}
+            <div>
+              <span className="font-display font-extrabold text-[22px] tracking-tight">
+                InvenFlow
+              </span>
+              <div className="text-[10px] font-semibold text-slate-500 tracking-[0.2em] -mt-1.5">
+                PRO
+              </div>
+            </div>
           </Link>
 
           {/* Menu Items */}
           <div className="hidden md:flex items-center gap-8">
             <Link
-              href="/features"
+              href="/"
               className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors duration-200 relative after:absolute after:-bottom-0.5 after:left-0 after:h-0.5 after:w-0 after:bg-violet-600 hover:after:w-full after:transition-all"
             >
-              Features
+              Home
             </Link>
-            <Link
+            {/* <Link
               href="/pricing"
               className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors duration-200 relative after:absolute after:-bottom-0.5 after:left-0 after:h-0.5 after:w-0 after:bg-violet-600 hover:after:w-full after:transition-all"
             >
               Pricing
-            </Link>
-            <Link
+            </Link> */}
+            {/* <Link
               href="/blog"
               className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors duration-200 relative after:absolute after:-bottom-0.5 after:left-0 after:h-0.5 after:w-0 after:bg-violet-600 hover:after:w-full after:transition-all"
             >
               Blog
-            </Link>
-            <Link
+            </Link> */}
+            {/*  <Link
               href="/about"
               className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors duration-200 relative after:absolute after:-bottom-0.5 after:left-0 after:h-0.5 after:w-0 after:bg-violet-600 hover:after:w-full after:transition-all"
             >
               About
-            </Link>
+            </Link> */}
             {isLoggedIn && (
               <Link
                 href="/dashboard"
@@ -84,14 +91,14 @@ export default function Navbar() {
             {isLoggedIn ? (
               <>
                 {/* Profile Button */}
-                <Button
+                {/* <Button
                   variant="ghost"
                   size="sm"
                   className="flex items-center gap-2 text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-all duration-200"
                 >
                   <User className="w-4 h-4" />
                   <span className="hidden sm:inline">Profile</span>
-                </Button>
+                </Button> */}
 
                 {/* Sign Out Button */}
                 <SignoutBtn />

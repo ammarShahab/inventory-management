@@ -56,9 +56,12 @@ export function SidebarContent() {
           <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-primary">
             <Boxes className="w-4 h-4 text-primary-foreground" />
           </div>
-          <span className="font-bold text-sm tracking-tight leading-tight">
-            Smart Inventory
+          <span className="font-display font-extrabold text-[22px] tracking-tight">
+            InvenFlow
           </span>
+          <div className="text-[10px] font-semibold text-slate-500 tracking-[0.2em] -mt-1.5">
+            PRO
+          </div>
         </div>
       </Link>
 

@@ -127,11 +127,11 @@ export default function BannerLanding() {
       <div className="fixed bottom-[-15%] left-[-10%] w-[600px] h-[600px] bg-gradient-to-tr from-violet-400/15 to-blue-500/15 rounded-full blur-3xl pointer-events-none animate-float-delayed" />
 
       {/* ── Navigation ────────────────────────────────────────────────────── */}
-      <nav className="relative z-50 border-b border-slate-200/60 bg-white/70 glass sticky top-0">
+      {/*  <nav className="relative z-50 border-b border-slate-200/60 bg-white/70 glass sticky top-0">
         <div className="max-w-[1400px] mx-auto px-6 sm:px-8 lg:px-12">
-          <div className="flex items-center justify-between h-[72px]">
-            {/* Logo + Nav Links */}
-            <div className="flex items-center gap-10">
+          <div className="flex items-center justify-between h-[72px]"> */}
+      {/* Logo + Nav Links */}
+      {/* <div className="flex items-center gap-10">
               <div className="flex items-center gap-3">
                 <div className="relative">
                   <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center shadow-lg shadow-blue-600/20">
@@ -166,10 +166,10 @@ export default function BannerLanding() {
                   ),
                 )}
               </div>
-            </div>
+            </div> */}
 
-            {/* CTA Buttons */}
-            <div className="flex items-center gap-3">
+      {/* CTA Buttons */}
+      {/* <div className="flex items-center gap-3">
               <button className="hidden sm:flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-700 hover:text-slate-900 transition">
                 <i className="ri-login-circle-line" />
                 Sign in
@@ -181,10 +181,10 @@ export default function BannerLanding() {
                 </span>
                 <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-indigo-600 opacity-0 group-hover:opacity-100 transition-opacity" />
               </button>
-            </div>
-          </div>
+            </div> */}
+      {/*     </div>
         </div>
-      </nav>
+      </nav> */}
 
       {/* ── Hero Section ──────────────────────────────────────────────────── */}
       <main className="relative z-10">
