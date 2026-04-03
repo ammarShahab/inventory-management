@@ -29,7 +29,7 @@ export default async function RootLayout({
       lang="en"
       className={cn("h-full", "antialiased", geistSans.className)}
     >
-      <body suppressHydrationWarning className={` min-h-full flex flex-col`}>
+      <body suppressHydrationWarning className={`min-h-full flex flex-col`}>
         {/* <TooltipProvider> */}
         <ConvexClientProvider initialToken={token}>
           {children}
