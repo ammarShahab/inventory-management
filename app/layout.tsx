@@ -8,18 +8,8 @@ import { ConvexClientProvider } from "@/components/web/ConvexClientProvider";
 import { getToken } from "./lib/auth-server";
 // import { TooltipProvider } from "@/components/ui/tooltip";
 
-const jetbrainsMono = JetBrains_Mono({
-  subsets: ["latin"],
-  variable: "--font-mono",
-});
-
 const geistSans = Geist({
   variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
   subsets: ["latin"],
 });
 
@@ -37,16 +27,9 @@ export default async function RootLayout({
   return (
     <html
       lang="en"
-      className={cn(
-        "h-full",
-        "antialiased",
-        geistSans.variable,
-        geistMono.variable,
-        "font-mono",
-        jetbrainsMono.variable,
-      )}
+      className={cn("h-full", "antialiased", geistSans.className)}
     >
-      <body suppressHydrationWarning className="min-h-full flex flex-col">
+      <body suppressHydrationWarning className={` min-h-full flex flex-col`}>
         {/* <TooltipProvider> */}
         <ConvexClientProvider initialToken={token}>
           {children}
