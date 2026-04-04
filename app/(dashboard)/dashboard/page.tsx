@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";
 import {
   ShoppingCart,
   Clock,
@@ -8,68 +9,26 @@ import {
   CheckCircle,
   Package,
 } from "lucide-react";
-
+import { useQuery } from "convex/react";
+import { api } from "@/convex/_generated/api";
 import { useRequireAuth } from "@/app/hooks/useRequireAuth";
-
-const STAT_CARDS = [
-  {
-    label: "Total Orders Today",
-    value: "0",
-    icon: ShoppingCart,
-    color: "text-blue-500",
-    bg: "bg-blue-500/10",
-  },
-  {
-    label: "Pending Orders",
-    value: "0",
-    icon: Clock,
-    color: "text-yellow-500",
-    bg: "bg-yellow-500/10",
-  },
-  {
-    label: "Completed Orders",
-    value: "0",
-    icon: CheckCircle,
-    color: "text-green-500",
-    bg: "bg-green-500/10",
-  },
-  {
-    label: "Revenue Today",
-    value: "$0.00",
-    icon: DollarSign,
-    color: "text-emerald-500",
-    bg: "bg-emerald-500/10",
-  },
-  {
-    label: "Low Stock Items",
-    value: "0",
-    icon: AlertTriangle,
-    color: "text-red-500",
-    bg: "bg-red-500/10",
-  },
-  {
-    label: "Total Products",
-    value: "0",
-    icon: Package,
-    color: "text-purple-500",
-    bg: "bg-purple-500/10",
-  },
-];
+import { ActivityLogItem } from "@/components/web/dashboard/activity/activity-log-item";
+import { ProductSummaryItem } from "@/components/web/dashboard/products/product-summary-item";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 export default function DashboardPage() {
-  // const { data: session, isPending } = authClient.useSession();
-  // if (!isPending && !session) redirect("/login");
-  // const router = useRouter();
-  /* useEffect(() => {
-    if (!isPending && !session) {
-      router.replace("/login");
-    }
-  }, [isPending, session, router]); */
+  const { session, isPending: authPending } = useRequireAuth("/login");
 
-  const { session, isPending } = useRequireAuth("/login");
-  // const { isPending } = useRequireAuth("/");
+  // ✅ Calculate midnight in the USER's local timezone on the client
+  const todayStart = useMemo(() => {
+    const d = new Date();
+    d.setHours(0, 0, 0, 0);
+    return d.getTime();
+  }, []);
 
-  if (isPending) {
+  const stats = useQuery(api.dashboard.getStats, { todayStart });
+
+  if (authPending) {
     return (
       <div className="flex items-center justify-center h-full">
         <p className="text-muted-foreground text-sm animate-pulse">
@@ -79,13 +38,51 @@ export default function DashboardPage() {
     );
   }
 
-  if (isPending) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900" />
-      </div>
-    );
-  }
+  const STAT_CARDS = [
+    {
+      label: "Total Orders Today",
+      value: stats?.totalOrdersToday ?? 0,
+      icon: ShoppingCart,
+      color: "text-blue-500",
+      bg: "bg-blue-500/10",
+    },
+    {
+      label: "Pending Orders",
+      value: stats?.pendingOrders ?? 0,
+      icon: Clock,
+      color: "text-yellow-500",
+      bg: "bg-yellow-500/10",
+    },
+    {
+      label: "Completed Orders",
+      value: stats?.completedOrders ?? 0,
+      icon: CheckCircle,
+      color: "text-green-500",
+      bg: "bg-green-500/10",
+    },
+    {
+      label: "Revenue Today",
+      value: `$${(stats?.revenueToday ?? 0).toFixed(2)}`,
+      icon: DollarSign,
+      color: "text-emerald-500",
+      bg: "bg-emerald-500/10",
+    },
+    {
+      label: "Low Stock Items",
+      value: stats?.lowStockCount ?? 0,
+      icon: AlertTriangle,
+      color: "text-red-500",
+      bg: "bg-red-500/10",
+    },
+    {
+      label: "Total Products",
+      value: stats?.totalProducts ?? 0,
+      icon: Package,
+      color: "text-purple-500",
+      bg: "bg-purple-500/10",
+    },
+  ];
+
   return (
     <div className="max-w-6xl mx-auto space-y-8">
       {/* Header */}
@@ -111,7 +108,11 @@ export default function DashboardPage() {
               <p className="text-xs text-muted-foreground font-medium">
                 {label}
               </p>
-              <p className="text-2xl font-bold mt-0.5">{value}</p>
+              {!stats ? (
+                <div className="h-8 w-16 bg-muted animate-pulse rounded mt-0.5" />
+              ) : (
+                <p className="text-2xl font-bold mt-0.5">{value}</p>
+              )}
             </div>
           </div>
         ))}
@@ -121,13 +122,39 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Product Summary */}
         <div className="border border-border rounded-xl bg-card">
-          <div className="px-5 py-4 border-b border-border">
+          <div className="px-5 py-4 border-b border-border flex items-center justify-between">
             <h2 className="font-semibold text-sm">Product Summary</h2>
+            <span className="text-xs text-muted-foreground">
+              {stats?.totalProducts ?? 0} total
+            </span>
           </div>
-          <div className="p-5">
-            <p className="text-sm text-muted-foreground">
-              No products yet. Add products to see summary here.
-            </p>
+          <div className="px-5">
+            {!stats ? (
+              <div className="space-y-3 py-4">
+                {[...Array(4)].map((_, i) => (
+                  <div key={i} className="h-8 bg-muted animate-pulse rounded" />
+                ))}
+              </div>
+            ) : stats.productSummary.length === 0 ? (
+              <p className="text-sm text-muted-foreground py-6 text-center">
+                No products yet. Add products to see summary here.
+              </p>
+            ) : (
+              <ScrollArea className="h-64">
+                <div className="py-2">
+                  {stats.productSummary.map((product) => (
+                    <ProductSummaryItem
+                      key={product.id}
+                      name={product.name}
+                      stock={product.stock}
+                      minStockThreshold={product.minStockThreshold}
+                      isLow={product.isLow}
+                      status={product.status}
+                    />
+                  ))}
+                </div>
+              </ScrollArea>
+            )}
           </div>
         </div>
 
@@ -136,10 +163,34 @@ export default function DashboardPage() {
           <div className="px-5 py-4 border-b border-border">
             <h2 className="font-semibold text-sm">Recent Activity</h2>
           </div>
-          <div className="p-5">
-            <p className="text-sm text-muted-foreground">
-              No activity yet. Actions will appear here as you use the system.
-            </p>
+          <div className="px-5">
+            {!stats ? (
+              <div className="space-y-3 py-4">
+                {[...Array(4)].map((_, i) => (
+                  <div
+                    key={i}
+                    className="h-10 bg-muted animate-pulse rounded"
+                  />
+                ))}
+              </div>
+            ) : stats.recentLogs.length === 0 ? (
+              <p className="text-sm text-muted-foreground py-6 text-center">
+                No activity yet. Actions will appear here.
+              </p>
+            ) : (
+              <ScrollArea className="h-64">
+                <div className="py-3 space-y-4">
+                  {stats.recentLogs.map((log) => (
+                    <ActivityLogItem
+                      key={log._id}
+                      message={log.message}
+                      type={log.type}
+                      createdAt={log.createdAt}
+                    />
+                  ))}
+                </div>
+              </ScrollArea>
+            )}
           </div>
         </div>
       </div>
