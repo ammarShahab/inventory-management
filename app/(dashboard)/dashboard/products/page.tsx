@@ -3,7 +3,6 @@ import { ProductList } from "@/components/web/dashboard/products/product-list";
 import { connection } from "next/server";
 
 export default async function ProductsPage() {
-  await connection();
   return (
     <div className="max-w-6xl mx-auto space-y-8">
       <div>
